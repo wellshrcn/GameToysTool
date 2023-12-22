@@ -10,9 +10,11 @@
 
 -支持的玩具列表：https://iostindex.com/?filter0ButtplugSupport=4&filter1Connection=Digital
 
--Only supports 1920*1080 and 2k resolutions, other resolutions are not supported.
 
---Buttplug based aapexlegends game vibrating toys auxiliary
+
+--Buttplug based apexlegends game vibrating toys auxiliary
+
+-Only supports 1920*1080 and 2k resolutions, other resolutions are not supported.
 
 -Only activates vibration when breaking armour, 5 levels
 
