@@ -8,7 +8,7 @@ using Buttplug.Client;
 using Buttplug.Client.Connectors.WebsocketConnector;
 using Buttplug.Core;
 
-namespace 游戏玩具助手
+namespace apexlegends_toys_tool
 {
     static class Program
     {
