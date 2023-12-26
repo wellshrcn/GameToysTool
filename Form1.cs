@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic; 
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ using Buttplug;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace 游戏玩具助手
+namespace apexlegends_toys_tool
 {
 
     public partial class Form1 : Form
@@ -28,12 +29,13 @@ namespace 游戏玩具助手
         public static extern uint GetPixel(IntPtr hdc, int x, int y);
 
         private bool isRunning = true;
+        private bool isRunning1 = true;
 
 
         private async Task ScanForDevices()
         {      
                 await client.StartScanningAsync();
-                await Task.Delay(100);
+                await Task.Delay(200);
                 await client.StopScanningAsync();
         }
         public Form1()
@@ -43,6 +45,8 @@ namespace 游戏玩具助手
             label4.Text = "服务器未连接";
             label1.Text = "未启动";
             Form1_Load(null, null);
+            textBox1.Text= File.ReadLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.ini")).FirstOrDefault();
+
         }
         private void UpdateDeviceList()
         {
@@ -54,11 +58,11 @@ namespace 游戏玩具助手
         }
         private ButtplugClientDevice device;
         public static ButtplugClient client;
-        private CancellationTokenSource _cancellationTokenSource;
         private bool _isConnected = false;
-        private async void Form1_Load(object sender, EventArgs e)
+        private int deviceIndex;
+        private void Form1_Load(object sender, EventArgs e)
         {
-            client = new ButtplugClient("游戏玩具助手");
+            client = new ButtplugClient("apexlegends_toys_tool");
 
             void HandleDeviceAdded(object aObj, DeviceAddedEventArgs aArgs)
             {
@@ -70,53 +74,57 @@ namespace 游戏玩具助手
             void HandleDeviceRemoved(object aObj, DeviceRemovedEventArgs aArgs)
             {
                 Console.WriteLine($"Device disconnected: {aArgs.Device.Name}");
+                device = null;
+                
             }
 
             client.DeviceRemoved += HandleDeviceRemoved;
-            int retryDelay = 100;
+            
 
-            while (true)
+            
+        }
+        private async void connect()
+        {
+            int retryDelay = 100;
+            int tryCount = 0;
+            while (tryCount < 30)
             {
                 try
                 {
-                    await client.ConnectAsync(new ButtplugWebsocketConnector(new Uri("ws://localhost:12345")));
+                    label4.Text = "正在连接......";
+                    await client.ConnectAsync(new ButtplugWebsocketConnector(new Uri(textBox1.Text)));
                     label4.Text = "服务器已连接";
                     _isConnected = true;
-                    StartProcessMonitoring();
-                    break;
+                    shuaxing();
+                    return;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    await Task.Delay(retryDelay);
+                    await Task.Delay(1000);
                     retryDelay *= 2;
+                    tryCount++;
                 }
             }
-        }
 
-        private void client_Disconnect(object sender, EventArgs e)
-        {
-            label4.Text = "服务器未连接";
-            _isConnected = false;
-            _cancellationTokenSource?.Cancel();
-        }
-
-        private async void StartProcessMonitoring()
-        {
-            _cancellationTokenSource = new CancellationTokenSource();
-
-            while (_isConnected)
+            if (tryCount >= 30)
             {
-                await Task.Delay(100);
-                Process[] processes = Process.GetProcessesByName("intiface_central");
-                if (processes.Length == 0)
-                {
-                    label4.Text = "服务器未连接";
-                    _cancellationTokenSource.Cancel();
-                    await client.DisconnectAsync();
-                    Form1_Load(null, null);
-                }
+                label4.Text = "连接超时";
             }
         }
+
+
+
+        private async void disconnect()
+        {
+            await client.DisconnectAsync();
+            listBox1.Items.Clear();
+            label4.Text = "服务器未连接";
+            label3.Text = "未连接";
+            _isConnected = false;
+            isRunning = false;
+            isRunning1 = false;
+        }
+
 
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -133,13 +141,33 @@ namespace 游戏玩具助手
         }
         private async void button1_Click(object sender, EventArgs e)
         {
-            if (label4.Text == "服务器未连接")
+            try
             {
-                MessageBox.Show("请先连接到服务器！服务器为自动连接");
-                return;
+                if (label4.Text == "服务器未连接")
+                {
+                    MessageBox.Show("请先连接到服务器！服务器为自动连接");
+                    return;
+                }
+                
+                await ScanForDevices();
+                UpdateDeviceList();
             }
-            await ScanForDevices();
-            UpdateDeviceList();
+            catch (Exception)
+            {
+                disconnect();
+            }
+        }
+        private async void shuaxing()
+        {
+            try
+            {
+                await ScanForDevices();
+                UpdateDeviceList();
+            }
+            catch (Exception)
+            {
+                
+            }
         }
 
         Dictionary<string, int[]> resolutionCoordinates = new Dictionary<string, int[]>()
@@ -148,148 +176,248 @@ namespace 游戏玩具助手
             { "2560x1440", new int[] { 260, 320, 380, 440, 500, 1335 ,447,1310} }
         };
 
-        private async void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
-            if (device != null && device.VibrateAttributes.Count > 0)
+            apexlegends();
+        }
+
+        private async void apexlegends() 
+        {
+            try
             {
-                label1.Text = "已启动";
-                string resolutionKey = $"{Screen.PrimaryScreen.Bounds.Width}x{Screen.PrimaryScreen.Bounds.Height}";
-                MessageBox.Show(resolutionKey);
-                if (resolutionCoordinates.TryGetValue(resolutionKey, out int[] coordinates))
+                if (device != null && device.VibrateAttributes.Count > 0)
                 {
-                    int x1 = coordinates[0];
-                    int x2 = coordinates[1];
-                    int x3 = coordinates[2];
-                    int x4 = coordinates[3];
-                    int x5 = coordinates[4];
-                    int y1 = coordinates[5];
-                    int x6 = coordinates[6];
-                    int y2 = coordinates[7];
-
-
-                    int count = 0;
-                    while (isRunning)
+                    label1.Text = "已启动";
+                    string resolutionKey = $"{Screen.PrimaryScreen.Bounds.Width}x{Screen.PrimaryScreen.Bounds.Height}";
+                    if (resolutionCoordinates.TryGetValue(resolutionKey, out int[] coordinates))
                     {
-                        Color pixelColor = GetColorAt(x6, y2);
-                        if (IsColorMatch(pixelColor, ColorTranslator.FromHtml("#54534F"), 30))
-                        {
-                            if (IsPixelColorGray(x1, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x2, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                        }
-                        else if (IsColorMatch(pixelColor, ColorTranslator.FromHtml("#3E4E79"), 30)) 
-                        {
-                            if (IsPixelColorGray(x1, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x2, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x3, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                        }
-                        else if(IsColorMatch(pixelColor, ColorTranslator.FromHtml("#563976"), 30))
-                        {
-                            if (IsPixelColorGray(x1, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x2, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x3, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x4, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                        }
-                        else if(IsColorMatch(pixelColor, ColorTranslator.FromHtml("#6D1E1C"), 30))
-                        {
-                            if (IsPixelColorGray(x1, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x2, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x3, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x4, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                            if (IsPixelColorGray(x5, y1, "#4b4b4b", 2))
-                            {
-                                count++;
-                            }
-                        }
+                        int x1 = coordinates[0];
+                        int x2 = coordinates[1];
+                        int x3 = coordinates[2];
+                        int x4 = coordinates[3];
+                        int x5 = coordinates[4];
+                        int y1 = coordinates[5];
+                        int x6 = coordinates[6];
+                        int y2 = coordinates[7];
 
 
-                        await controllers(count);
-                        await Task.Delay(300);
-
-                        if (!isRunning)
+                        int count = 0;
+                        while (isRunning)
                         {
-                            isRunning = true;
-                            label1.Text = "未启动";
-                            break;
-                        }
+                            Color pixelColor = GetColorAt(x6, y2);
+                            if (IsColorMatch(pixelColor, ColorTranslator.FromHtml("#54534F"), 30))
+                            {
+                                if (IsPixelColorGray(x1, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x2, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                            }
+                            else if (IsColorMatch(pixelColor, ColorTranslator.FromHtml("#3E4E79"), 30))
+                            {
+                                if (IsPixelColorGray(x1, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x2, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x3, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                            }
+                            else if (IsColorMatch(pixelColor, ColorTranslator.FromHtml("#563976"), 30))
+                            {
+                                if (IsPixelColorGray(x1, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x2, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x3, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x4, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                            }
+                            else if (IsColorMatch(pixelColor, ColorTranslator.FromHtml("#604a05"), 30))
+                            {
+                                if (IsPixelColorGray(x1, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x2, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x3, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x4, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                            }
+                            else if (IsColorMatch(pixelColor, ColorTranslator.FromHtml("#6D1E1C"), 30))
+                            {
+                                if (IsPixelColorGray(x1, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x2, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x3, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x4, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                                if (IsPixelColorGray(x5, y1, "#4b4b4b", 2))
+                                {
+                                    count++;
+                                }
+                            }
 
-                        count = 0; 
+
+                            await controllers(count);
+                            await Task.Delay(300);
+
+                            if (!isRunning)
+                            {
+                                isRunning = true;
+                                label1.Text = "未启动";
+                                break;
+                            }
+
+                            count = 0;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("未知分辨率");
                     }
                 }
                 else
                 {
-                    MessageBox.Show("未知分辨率");
+                    MessageBox.Show("该设备未连接或不支持震动");
                 }
             }
-            else
+            catch (Exception)
             {
-                MessageBox.Show("该设备未连接或不支持震动");
+                await Task.Delay(100);
+                if (device == null)
+                {
+                    redevice();
+                }
+                else
+                {
+                    disconnect();
+                }
             }
         }
 
+
+        private async void redevice()
+        {
+            while (isRunning1)
+            {
+                try
+                {
+                    SetConnectionStatus("重新连接...", "断开，重连中...");
+                    await ScanForDevices();
+                    UpdateDeviceList();
+
+                    // 尝试获取第一个设备
+                    device = client.Devices[deviceIndex];
+
+                    // 如果获取成功且设备不为空
+                    if (device != null)
+                    {
+                        SetConnectionStatus("已连接", "已启动");
+                        apexlegends();
+                        isRunning1 = true;
+                        break;
+                    }
+                    else
+                    {
+                        // 如果设备为空，等待一段时间然后重试
+                        await Task.Delay(1000);
+                    }
+                }
+                catch (Exception)
+                {
+                    // 如果尝试访问 client.Devices[0] 出现异常，比如列表为空
+                    SetConnectionStatus("重新连接...", "断开，重连中...");
+                    await Task.Delay(1000); // 出错了，等待一段时间然后重试
+                }
+            }
+        }
+        private void SetConnectionStatus(string label3Text, string label1Text)
+        {
+            label3.Text = label3Text;
+            label1.Text = label1Text;
+        }
+
+
+
+
+
         private async Task controllers(int count)
         {
-            if (count == 0)
-            {
-                await device.VibrateAsync(0);
+            try 
+            { 
+                if (count == 0)
+                {
+                    await device.VibrateAsync(0);
+                }
+                else if (count == 1)
+                {
+                    await device.VibrateAsync(0.2);
+                }
+                else if (count == 2)
+                {
+                    await device.VibrateAsync(0.4);
+                }
+                else if (count == 3)
+                {
+                    await device.VibrateAsync(0.6);
+                }
+                else if (count == 4)
+                {
+                    await device.VibrateAsync(0.8);
+                }
+                else if (count == 5)
+                {
+                    await device.VibrateAsync(1);
+                }
             }
-            else if (count == 1)
+            catch (Exception)
             {
-                await device.VibrateAsync(0.2);
-            }
-            else if (count == 2)
-            {
-                await device.VibrateAsync(0.4);
-            }
-            else if (count == 3)
-            {
-                await device.VibrateAsync(0.6);
-            }
-            else if (count == 4)
-            {
-                await device.VibrateAsync(0.8);
-            }
-            else if (count == 5)
-            {
-                await device.VibrateAsync(1);
+                isRunning = false;
+                await Task.Delay(100);
+                if (device == null)
+                {
+                    redevice();
+                }
+                else
+                {
+                    disconnect();
+                }
             }
         }
 
@@ -335,11 +463,17 @@ namespace 游戏玩具助手
 
         private void button4_Click(object sender, EventArgs e)
         {
+            nconnect();
+        }
+
+        private void nconnect() 
+        {
             if (listBox1.SelectedIndex >= 0)
             {
                 var selectedIndex = listBox1.SelectedIndex;
                 var deviceChoice = client.Devices[selectedIndex];
                 device = client.Devices.FirstOrDefault(dev => dev.Index == deviceChoice.Index);
+                int deviceIndex = selectedIndex;
                 MessageBox.Show("连接成功");
                 label3.Text = "已连接";
             }
@@ -416,17 +550,13 @@ namespace 游戏玩具助手
 
         private async void button3_Click_2(object sender, EventArgs e)
         {
-            isRunning = false;
-            if (label4.Text == "服务器未连接")
-            {
-                MessageBox.Show("请先连接到服务器！服务器为自动连接");
-                return;
-            }
+
             try
-            {
+            {   isRunning = false;
+                isRunning1 = false;
                 await device.VibrateAsync(0.0);
             }
-            catch
+            catch(Exception)
             {
             }
 
@@ -473,37 +603,41 @@ namespace 游戏玩具助手
 
         private void button5_Click_1(object sender, EventArgs e)
         {
-            if (label4.Text == "服务器未连接")
+            try
             {
-                MessageBox.Show("请先连接到服务器！服务器为自动连接");
-                return;
+                if (label4.Text == "服务器未连接")
+                {
+                    MessageBox.Show("请先连接到服务器！服务器为自动连接");
+                    return;
+                }
+                List<string> features = new List<string>();
+                if (device.VibrateAttributes.Count > 0)
+                {
+                    features.Add("震动");
+                }
+                if (device.RotateAttributes.Count > 0)
+                {
+                    features.Add("旋转");
+                }
+                if (device.OscillateAttributes.Count > 0)
+                {
+                    features.Add("振荡");
+                }
+                if (device.LinearAttributes.Count > 0)
+                {
+                    features.Add("线性运动");
+                }
+                string featureDescriptions = string.Join(", ", features);
+                if (features.Any())
+                {
+                    MessageBox.Show(device.Name + " 支持的功能: " + featureDescriptions);
+                }
+                else
+                {
+                    MessageBox.Show(device.Name + " 没有检测到支持的功能");
+                }
             }
-            List<string> features = new List<string>();
-            if (device.VibrateAttributes.Count > 0)
-            {
-                features.Add("震动");
-            }
-            if (device.RotateAttributes.Count > 0)
-            {
-                features.Add("旋转");
-            }
-            if (device.OscillateAttributes.Count > 0)
-            {
-                features.Add("振荡");
-            }
-            if (device.LinearAttributes.Count > 0)
-            {
-                features.Add("线性运动");
-            }
-            string featureDescriptions = string.Join(", ", features);
-            if (features.Any())
-            {
-                MessageBox.Show(device.Name + " 支持的功能: " + featureDescriptions);
-            }
-            else
-            {
-                MessageBox.Show(device.Name + " 没有检测到支持的功能");
-            }
+            catch (Exception) { }
         }
 
         private void label5_Click(object sender, EventArgs e)
@@ -517,6 +651,43 @@ namespace 游戏玩具助手
         }
 
         private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            connect();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            disconnect();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            
+            string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            
+            string iniFilePath = Path.Combine(currentDirectory, "config.ini");
+
+            string textToSave = textBox1.Text;
+
+            File.WriteAllText(iniFilePath, textToSave);
+        }
+
+        private void label7_Click(object sender, EventArgs e)
         {
 
         }
