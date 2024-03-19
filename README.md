@@ -6,7 +6,7 @@
 -支持的玩具列表：https://iostindex.com/?filter0ButtplugSupport=4&filter1Connection=Digital
 
 
-ea封禁了我的Apex账户，这个项目永久停止更新
+
 
 -Only supports 1920*1080 and 2k resolutions, other resolutions are not supported.
 --Buttplug based aapexlegends game vibrating toys auxiliary
@@ -16,4 +16,4 @@ ea封禁了我的Apex账户，这个项目永久停止更新
 -List of supported toys: https://iostindex.com/?filter0ButtplugSupport=4&filter1Connection=Digital
 
 
-Ea ban my Apex account, so this project stopped updating permanently.
+
