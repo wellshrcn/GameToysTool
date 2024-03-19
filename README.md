@@ -15,5 +15,5 @@
 -Completely open source and free, please do not buy
 -List of supported toys: https://iostindex.com/?filter0ButtplugSupport=4&filter1Connection=Digital
 
-
+Because my game account was wrongly banned by ea, the latest version will stop updating.
 
