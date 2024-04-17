@@ -6,6 +6,8 @@
 -支持的玩具列表：https://iostindex.com/?filter0ButtplugSupport=4&filter1Connection=Digital
 
 
+号被没有木琴的重生封了，这个软件停止更新
+
 
 
 -Only supports 1920*1080 and 2k resolutions, other resolutions are not supported.
