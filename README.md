@@ -6,7 +6,7 @@
 -支持的玩具列表：https://iostindex.com/?filter0ButtplugSupport=4&filter1Connection=Digital
 
 
-号被没有木琴的重生封了，这个软件停止更新
+号被没有木琴的重生封了，这个软件停止更新，要是有大佬能帮我解封我可以更新其他功能
 
 
 
