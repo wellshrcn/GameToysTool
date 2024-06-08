@@ -17,6 +17,7 @@
 其它游戏正在制作中ing
 
 记得向作者捐赠加快开发进度
+捐赠地址→http://www.wellshr.work/index.php/Aboutus.html
 
 The latest version has been updated with a new interface, support for Buttplug and xtoys toys, and more games will be updated!
 
