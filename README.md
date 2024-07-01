@@ -20,6 +20,8 @@
 
 捐赠地址→软件内捐赠
 
+联系作者 https://x.com/WELLS_HR_CN?s=09
+
 The latest version has been updated with a new interface, support for Buttplug and xtoys toys, and more games will be updated!
 
 
