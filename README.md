@@ -1,53 +1,26 @@
 此版本停止更新，将全力以赴重构版
-
-重构版玩法非常多的，目前公布的只是冰山一角
-
-大伙先点个⭐，等我重构版发布嗷
-
 讨论群 QQ1007959399
-内测群在讨论群的群公告内查看
-#########################################
+项目最新链接https://www.wellshr.tech/index.php/archives/1
 
-本项目致力于在游戏里控制蓝牙、有线等情趣玩具
+新版已经支持模块化检测游戏，并且玩家可以制作自定义检测脚本。
+包括使用基址，特征码，像素，OCR等方法对您想检测的游戏进行检测
 
-支持市面上大部分厂商的情趣玩具
+额外的功能:
+音乐律动
+文本关键词识别(柚子厨有福了)
+多人远程控制(使用mqtt的消息调度控制)
+脏话检测(本地麦克风)
+心率检测以及AI心率联动控制(待开发)
+手柄震动检测(技术力不够做不出来，有没有什么办法能通用检测PC→手柄消息，或者通用apihook，只要能适配xbox手柄就行)
 
-最新版本已经更新，全新界面，全新架构，支持Buttplug和xtoys两家玩具，并且将更新更多游戏
+更多其他功能正在开发
 
-支持游戏列表:
+后续会出相关教程和脚本制作方法
 
-原神
+哥们已经穷死了，先打工了，项目进度会慢很多
 
-夜族崛起
+投喂(因为政策，只能用营业执照的码)😭
 
-斯喵快跑
+http://www.wellshr.work/1736313753944.jpg
 
-怪物猎人世界
-
-其它游戏正在制作中ing
-
-记得向作者捐赠加快开发进度
-
-捐赠地址→软件内捐赠
-
-联系作者 https://x.com/WELLS_HR_CN?s=09
-
-The latest version has been updated with a new interface, support for Buttplug and xtoys toys, and more games will be updated!
-
-
-
-Supported games list.
-
-yuanshen
-
-rising
-
-MuseDash
-
-Monster Hunter World
-
-
-
-Other games in the works
-
-Remember to donate to the author to speed up development!
+软件后续其他功能得收费了，要不然项目服务器费用真的付不起😭(检测游戏和目前的功能是免费的，就一个多人控制是收费的)
