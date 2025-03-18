@@ -1,4 +1,4 @@
-新版本已发布
+新版本已发布(新版不开源，仓库里的代码是第一个版本)
 讨论群 QQ1007959399
 项目最新链接https://www.wellshr.tech/index.php/archives/1
 
