@@ -34,6 +34,10 @@ Our goal is to provide a foolproof UI and simple user experience — so users ca
 🧸 Device Compatibility
 This software supports all devices from Buttplug and xtoys, including:
 
+All devices from Buttplug
+
+All devices from xtoys
+
 DG-LAB
 
 yiciyuan Shock Box
