@@ -34,9 +34,9 @@ Our goal is to provide a foolproof UI and simple user experience — so users ca
 🧸 Device Compatibility
 This software supports all devices from Buttplug and xtoys, including:
 
-Coyote
+DG-LAB
 
-Interdimensional Shock Box
+yiciyuan Shock Box
 
 You can also add custom devices — but you must know details such as write commands, UUIDs, etc.
 
