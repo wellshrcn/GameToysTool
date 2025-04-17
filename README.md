@@ -16,6 +16,7 @@ QQ群： 1007959399
 新版支持模块化检测游戏，并允许用户编写自定义检测脚本。
 
 🔍 支持的检测方式：
+
 基址扫描
 
 特征码识别
@@ -71,6 +72,7 @@ Please use this software in accordance with the software agreement and comply wi
 The new version supports modular game detection, allowing users to create custom detection scripts.
 
 🔍 Supported Detection Methods:
+
 Base Address Scanning
 
 Signature Matching
